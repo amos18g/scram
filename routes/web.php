@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthEmpleadosController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\MotoristaController;
 use App\Http\Controllers\EmpleadoController;
@@ -91,17 +92,37 @@ Route::get('/motoristas/solicitud', [MotoristaController::class, 'indexSolicitud
 -------------*/
 
 
-Route::get('/empleados', [EmpleadoController::class, 'index'])->name('empleados.inicio');
 
-Route::get('/empleados/clientes', [EmpleadoController::class, 'indexClientes'])->name('empleados.clientes');
+Route::get('/empleados', [EmpleadoController::class, 'index'])
+->middleware('guest') //puede acceder sin logearse
+->name('empleados.inicio');
 
-Route::get('/empleados/solicitudes', [EmpleadoController::class, 'indexSolicitudes'])->name('empleados.solicitudes');
+Route::post('/empleados/loginAdmin', [AuthEmpleadosController::class, 'inicioAdmin'])
+->name('login.inicioAdmin');
 
-Route::get('/empleados/motoristas', [EmpleadoController::class, 'indexMotoristas'])->name('empleados.motoristas');
+Route::get('/empleados/logoutAdmin', [AuthEmpleadosController::class, 'cerrarSesionEmpleado'])
+->middleware('auth.admin')
+->name('logout.cerrarAdmin');
 
-Route::get('/empleados/dashboard', [EmpleadoController::class, 'indexDashboard'])->name('empleados.dashboard');
+Route::get('/empleados/clientes', [EmpleadoController::class, 'indexClientes'])
+->middleware('auth.admin')
+->name('empleados.clientes');
 
-Route::get('/empleados/asignarsolicitud', [EmpleadoController::class, 'indexAsignarSolicitud'])->name('empleados.asignarsolicitud');
+Route::get('/empleados/solicitudes', [EmpleadoController::class, 'indexSolicitudes'])
+->middleware('auth.admin')
+->name('empleados.solicitudes');
+
+Route::get('/empleados/motoristas', [EmpleadoController::class, 'indexMotoristas'])
+->middleware('auth.admin')
+->name('empleados.motoristas');
+
+Route::get('/empleados/dashboard', [EmpleadoController::class, 'indexDashboard'])
+->middleware('auth.admin')
+->name('empleados.dashboard');
+
+Route::get('/empleados/asignarsolicitud', [EmpleadoController::class, 'indexAsignarSolicitud'])
+->middleware('auth.admin')
+->name('empleados.asignarsolicitud');
 
 // Route::get('/empleados', function () {
 //     return view('empleados.inicio');
